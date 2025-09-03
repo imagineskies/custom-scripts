@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#varables
+
+documentFolders='"Books","Excel","OS","PDF","Personal","Programming","Programs","Temp","Transfer Needed","Work"'
+
+apt update
+apt full-upgrade -y
+apt autoremove
+mkdir -p ~/.local/bin
+mkdir -p ~/Documents/{$documentFolders}

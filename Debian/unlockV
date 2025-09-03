@@ -1,0 +1,15 @@
+#!/bin/bash
+case $1 in 
+ lock)
+  sudo chown root:root $2
+  sudo chown root:root -R $2
+  sudo chmod 600 $2
+  sudo chmod 600 -R $2
+ ;;
+ unlock)
+  sudo chown rayna:rayna $2
+  sudo chown rayna:rayna -R $2
+  sudo chmod 775 $2
+  sudo chmod 775 -R $2
+ ;;
+esac

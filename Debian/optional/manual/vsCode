@@ -1,0 +1,17 @@
+#!/bin/bash
+# Variables
+programName="VS_Code"
+programURL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+SERVER_VERSION=$(curl -sI "$programURL" | grep location: | awk -F'/code_' '{print $2}' | awk -F'_amd64.deb' '{print $1}' | awk -F'-' '{print $1}')
+LOCAL_VERSION=$(dpkg --list | grep "ii  code" | awk '{print $3}' | awk -F'-' '{print $1}')
+
+# If program isn't installed or is not the same version number, install it.
+if [ -z "$LOCAL_VERSION" ] || dpkg --compare-versions "$SERVER_VERSION" gt "$LOCAL_VERSION"; then
+    wget --content-disposition -O "$programName" "$programURL"
+    dpkg -i "$programName"
+    rm "$programName"
+    echo "$programName is now installed/updated."
+else
+    echo "$programName is already installed/updated."
+    exit 0
+fi

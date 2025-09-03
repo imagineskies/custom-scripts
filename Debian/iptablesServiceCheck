@@ -1,0 +1,7 @@
+#!/bin/bash
+iptablesDead=$(service iptables status | grep dead)
+if [ -z "$iptablesDead" ]; then
+    exit 1
+else
+    sudo service iptables restart
+fi

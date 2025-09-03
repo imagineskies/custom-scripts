@@ -1,0 +1,16 @@
+#!/bin/bash
+# Variables
+programName="linphone"
+programURL="https://download.linphone.org/releases/linux/latest_app"
+SERVER_VERSION=$(curl -sl $programURL | grep href | awk -F'app/|"|Linphone-|.AppImage' '{print $4}')
+LOCAL_VERSION=$(cat ~/.local/bin/lpv)
+
+# If program isn't installed or is not the same version number, install it.
+if [[ -z "$LOCAL_VERSION" || "$SERVER_VERSION" > "$LOCAL_VERSION" ]]; then
+    curl -sl $programURL | grep href | awk -F'app/|"|Linphone-|.AppImage' '{print $4}' > lpv
+    wget --content-disposition -O "$programName" "$programURL"
+    chmod +x linphone
+    echo "$programName is now installed/updated."
+else
+    echo "$programName is already installed/updated."
+fi

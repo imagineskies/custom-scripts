@@ -1,0 +1,3 @@
+#!/bin/bash
+flatpak install --noninteractive flathub org.mozilla.firefox
+flatpak install --noninteractive flathub org.gimp.GIMP
