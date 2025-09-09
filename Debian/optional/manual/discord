@@ -1,17 +1,15 @@
 #!/bin/bash
-# Variables
-programName="discord"
+programName="Discord"
 programURL="https://discord.com/api/download?platform=linux&format=deb"
 SERVER_VERSION=$(curl -sI "$programURL" | grep location: | awk -F'/discord-|.deb' '{print $2}')
 LOCAL_VERSION=$(dpkg --list | grep discord | awk '{print $3}')
 
-# If program isn't installed or is not the same version number, install it.
-if [[ -z "$LOCAL_VERSION" || "$SERVER_VERSION" > "$LOCAL_VERSION" ]]; then
-    wget --content-disposition "$programURL" -O "$programName"
-    sudo dpkg -i "$programName"
-    rm "$programName" 
-    sudo dpkg --configure -a
-    echo "$programName is now installed/updated."
+if [ "$LOCAL_VERSION" == "$SERVER_VERSION" ]; then
+	echo "Latest version of $programName is already installed. Skipping..."
 else
-    echo "$programName is already installed/updated."
+	wget "$programURL" -O "$programName"
+	sudo dpkg -i "$programName"
+	rm "$programName"
+	sudo dpkg --configure -a
+	echo "$programName has been installed/updated."
 fi

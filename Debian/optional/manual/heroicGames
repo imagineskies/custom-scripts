@@ -1,0 +1,17 @@
+#!/bin/bash
+githubURL="https://api.github.com/repos/Heroic-Games-Launcher/HeroicGamesLauncher/releases/latest"
+packageVersion=$(curl -sL "$githubURL" | grep -E "tag_name" | awk -F'"|v' '{print $5}')
+packageName=$(curl -sL "$githubURL" | grep -E "linux-amd64.deb" | awk 'BEGIN{RS = "" ; FS = "\n"}{print $1}' | awk -F'"' '{print $4}')
+packageURL=$(curl -sL "$githubURL" | grep -E "linux-amd64.deb" | awk 'BEGIN{RS = "" ; FS = "\n"}{print $2}' | awk -F'"' '{print $4}')
+installedVersion=$(dpkg --list | grep heroic | awk '{print $3}')
+
+
+if [ "$installedVersion" == "$packageVersion" ]; then
+	echo "Latest version of Heroic is already installed. Skipping..."
+else 
+	echo "There is a new version of Heroic. Installing..."
+	wget "$packageURL" -O "$packageName" 
+	sudo dpkg -i "$packageName"
+	rm "$packageName"
+	echo "$packageName installed"
+fi

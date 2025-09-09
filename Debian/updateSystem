@@ -1,7 +1,8 @@
+#!/bin/bash
 sudo apt update
 sudo apt full-upgrade -y
 sudo fwupdmgr update -y
 sudo flatpak update -y
 sudo apt autoremove -y
-sudo ~/.local/bin/updateDiscord
+# sudo ~/.local/bin/updateDiscord
 
