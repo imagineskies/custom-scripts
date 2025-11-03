@@ -1,0 +1,19 @@
+#!/bin/bash
+# Variables
+programName="VS_Code"
+programURL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+downloadLink=$(curl -sI "$programURL" | grep location: | awk -F' ' '{print $2}' | tr -d '\r')
+downloadName=$(echo "$downloadLink" | awk -F'/' '{print $NF}')
+serverVersion=$(echo "$downloadName" | awk -F'_|-' '{print $2}')
+localVersion=$(dpkg --list | grep "ii  code" | awk '{print $3}' | awk -F'-' '{print $1}')
+
+if [ "$localVersion" == "$serverVersion" ]; then
+    echo "Latest version of $programName is already installed. Skipping..."
+    exit 0
+else
+    echo "New version found. Installing..."
+    wget "$downloadLink" -O "/tmp/$downloadName"
+    dpkg -i "/tmp/$downloadName"
+    rm "/tmp/$downloadName"
+    echo "Instalation Completed."
+fi

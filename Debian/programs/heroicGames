@@ -5,9 +5,9 @@ packageName=$(curl -sL "$githubURL" | grep -E "linux-amd64.deb" | awk 'BEGIN{RS 
 packageURL=$(curl -sL "$githubURL" | grep -E "linux-amd64.deb" | awk 'BEGIN{RS = "" ; FS = "\n"}{print $2}' | awk -F'"' '{print $4}')
 installedVersion=$(dpkg --list | grep heroic | awk '{print $3}')
 
-
 if [ "$installedVersion" == "$packageVersion" ]; then
 	echo "Latest version of Heroic is already installed. Skipping..."
+	echo 0
 else 
 	echo "There is a new version of Heroic. Installing..."
 	wget "$packageURL" -O "$packageName" 

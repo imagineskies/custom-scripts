@@ -1,0 +1,19 @@
+#!/bin/bash
+# Variables
+programName="Discord"
+programURL="https://discord.com/api/download?platform=linux&format=deb"
+downloadLink=$(curl -sI "$programURL" | grep location | awk -F' ' '{print $2}')
+downloadName=$(echo "$downloadLink" | awk -F'/' '{print $NF}')
+downloadVersion=$(echo "$downloadName" | awk -F'-|.deb' '{print $2}')
+installedVersion=$(dpkg --list | grep discord | awk '{print $3}')
+
+if [ "$installedVersion" == "$downloadVersion" ]; then
+	echo "Latest version of $programName is already installed. Skipping..."
+	exit 0
+else
+	echo "Installing Update..."
+	wget "$programURL" -O "/tmp/$programName"
+	sudo dpkg -i "/tmp/$programName"
+	rm "$programName"
+	echo "$programName has been installed/updated."
+fi
