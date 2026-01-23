@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Variables
+DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
+DISCORD_SERVER_VERSION=$(curl -sI "$DISCORD_URL" | grep location: | awk -F'/discord-' '{print $2}' | awk -F'.deb' '{print $1}')
+DISCORD_FILE="Discord_$DISCORD_SERVER_VERSION"
+DISCORD_LOCAL_VERSION=$(dpkg --list | grep discord | awk '{print $3}')
+
+# If program isn't installed or is not the same version number, install it.
+if [ "$DISCORD_SERVER_VERSION" == "$DISCORD_LOCAL_VERSION" ]; then
+    echo "The latest version of discord is installed. Skipping."
+    exit 0
+fi
+
+echo "Discord update found. Downloading update..."
+wget -O "/tmp/$DISCORD_FILE" "$DISCORD_URL"
+echo "Update downloaded. Installing..."
+sudo dpkg -i "/tmp/$DISCORD_FILE"
+echo "Update installed."
+rm "/tmp/$DISCORD_FILE"
+sudo dpkg --configure -a
