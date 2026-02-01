@@ -1,19 +1,21 @@
 #!/bin/bash
-# Variables
-programName="VS_Code"
-programURL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-downloadLink=$(curl -sI "$programURL" | grep location: | awk -F' ' '{print $2}' | tr -d '\r')
-downloadName=$(echo "$downloadLink" | awk -F'/' '{print $NF}')
-serverVersion=$(echo "$downloadName" | awk -F'_|-' '{print $2}')
-localVersion=$(dpkg --list | grep "ii  code" | awk '{print $3}' | awk -F'-' '{print $1}')
 
-if [ "$localVersion" == "$serverVersion" ]; then
-    echo "Latest version of $programName is already installed. Skipping..."
+# Variables
+CODE_URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+CODE_SERVER_VERSION=$(curl -sI "$CODE_URL" | grep location: | awk -F'/code_' '{print $2}' | awk -F'-' '{print $1}')
+CODE_FILE="CODE_$CODE_SERVER_VERSION"
+CODE_LOCAL_VERSION=$(dpkg --list | grep code | awk '{print $3}')
+
+# Check if Update is needed
+if [ "$CODE_SERVER_VERSION" == "$CODE_LOCAL_VERSION" ]; then
+    echo "The latest version of VS Code is installed. Skipping."
     exit 0
-else
-    echo "New version found. Installing..."
-    wget "$downloadLink" -O "/tmp/$downloadName"
-    dpkg -i "/tmp/$downloadName"
-    rm "/tmp/$downloadName"
-    echo "Instalation Completed."
 fi
+
+echo "VS Code update found. Downloading update..."
+wget -q -O "/tmp/$CODE_FILE" "$CODE_URL"
+echo "Update downloaded. Installing..."
+sudo dpkg -i "/tmp/$CODE_FILE"
+echo "Update installed."
+rm "/tmp/$CODE_FILE"
+sudo dpkg --configure -a
